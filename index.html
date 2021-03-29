@@ -1,0 +1,113 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="/tailwind.css" rel="stylesheet">
+    <script src="vue@2.js"></script>
+</head>
+<body>
+
+<div class="md:container md:mx-auto">
+
+    <div id="app">
+
+        <h1 class="text-5xl pb-6">Breeze calculations</h1>
+
+        <div class="space-y-2">
+
+            <div class="grid grid-cols-3">
+                <div class="bg-purple-200">Name</div>
+                <div class="bg-purple-200">Category</div>
+                <div class="bg-purple-200">Price</div>
+            </div>
+
+            <div class="grid grid-cols-3" v-for="item in calculations">
+                <div>{{ item.name }}</div>
+                <div>{{ item.category }}</div>
+                <div>{{ item.price }}</div>
+            </div>
+
+            <div class="grid grid-cols-3">
+                <div>
+                    <input v-model.trim="name" type="text" class="w-11/12 border-solid border border-purple-500"/>
+                </div>
+                <div>
+                    <input v-model.trim="category" type="text" class="w-11/12 border-solid border border-purple-500"/>
+                </div>
+                <div>
+                    <input v-model.number="price" type="number" class="w-11/12 border-solid border border-purple-500"/>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3">
+                <div class="col-end-4 font-bold">
+                    Sum is: {{ totalSum }}
+                </div>
+            </div>
+
+                <button
+                    @click="addNewCalculation"
+                    :disabled="!isValid"
+                    :class="{ 'opacity-50': !isValid }"
+                    class="w-full p-2 bg-purple-400 border border-solid border-black text-white font-bold uppercase">
+                    Add new
+                </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+<script src="/vue@2.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            calculations: [],
+            name: '',
+            category: '',
+            price: '',
+        },
+        methods: {
+            addNewCalculation: function () {
+                if (this.validated()) {
+                    this.calculations.push({
+                        name: this.name,
+                        category: this.category,
+                        price: parseInt(this.price),
+                    });
+
+                    this.setDefaults();
+                }
+            },
+            setDefaults: function () {
+                this.name = '';
+                this.category = '';
+                this.price = '';
+            },
+            validated: function () {
+                return this.name !== ''
+                && this.category !== ''
+                && this.price !== ''
+            }
+        },
+        computed: {
+            totalSum: function () {
+                let total = 0;
+
+                this.calculations.forEach(function(item, index) {
+                    total += item.price;
+                })
+
+                return total;
+            },
+            isValid: function() {
+                return this.validated();
+            }
+        },
+    })
+</script>
+</body>
+</html>
